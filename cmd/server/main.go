@@ -48,7 +48,7 @@ func main() {
 	})
 
 	app.Get("/api/ping/all", func(c *fiber.Ctx) error {
-		var out []services.HTTPStatus
+		var out []domain.HTTPStatus
 		for _, u := range cfg.HTTPTargets {
 			out = append(out, services.PingHTTP(u))
 		}

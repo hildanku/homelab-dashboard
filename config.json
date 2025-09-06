@@ -1,0 +1,10 @@
+{
+  "http_targets": [
+    "http://localhost:8080/api/metrics"
+  ],
+  "process_targets": [
+    "dockerd",
+    "jellyfin",
+    "vaultwarden"
+  ]
+}

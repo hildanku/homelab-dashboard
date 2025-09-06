@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"os/exec"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/hildanku/homelab-dashboard/domain"
@@ -53,6 +54,15 @@ func main() {
 			out = append(out, services.PingHTTP(u))
 		}
 		return c.JSON(out)
+	})
+
+	app.Get("/api/docker", func(c *fiber.Ctx) error {
+		cmd := "docker ps"
+		out, err := exec.Command("sh", "-c", cmd).CombinedOutput()
+		return c.JSON(fiber.Map{
+			"ok":     err == nil,
+			"output": string(out), // kamu bisa split per baris lalu parse jadi array
+		})
 	})
 
 	log.Println("listening on :5551")

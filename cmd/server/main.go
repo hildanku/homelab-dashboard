@@ -1,32 +1,21 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
-	"os"
 	"os/exec"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/hildanku/homelab-dashboard/domain"
+	"github.com/hildanku/homelab-dashboard/internal/config"
 	"github.com/hildanku/homelab-dashboard/internal/metrics"
 	"github.com/hildanku/homelab-dashboard/internal/services"
 	"github.com/hildanku/homelab-dashboard/internal/shared"
 )
 
-func loadConfig(path string) domain.Config {
-	var cfg domain.Config
-	b, err := os.ReadFile(path)
-	if err != nil {
-		return cfg
-	}
-	_ = json.Unmarshal(b, &cfg)
-	return cfg
-}
-
 func main() {
 	app := fiber.New()
 
-	cfg := loadConfig("config.json")
+	cfg := config.Load("config.json")
 
 	app.Get("/api/metrics", func(c *fiber.Ctx) error {
 		snap, err := metrics.SnapshotNow()
@@ -62,7 +51,7 @@ func main() {
 
 		return shared.AppResponse(c, fiber.StatusOK, "success to get docker", fiber.Map{
 			"ok":     err == nil,
-			"output": string(out), // kamu bisa split per baris lalu parse jadi array
+			"output": string(out),
 		})
 	})
 

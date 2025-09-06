@@ -8,6 +8,7 @@ import (
 	"github.com/hildanku/homelab-dashboard/internal/metrics"
 	"github.com/hildanku/homelab-dashboard/internal/services"
 	"github.com/hildanku/homelab-dashboard/internal/shared"
+	"github.com/hildanku/homelab-dashboard/internal/system"
 )
 
 func RegisterRoutes(app *fiber.App, cfg domain.Config) {
@@ -47,5 +48,10 @@ func RegisterRoutes(app *fiber.App, cfg domain.Config) {
 			"ok":     err == nil,
 			"output": string(out),
 		})
+	})
+
+	app.Get("/api/system", func(c *fiber.Ctx) error {
+		sys := system.GetInfo()
+		return shared.AppResponse(c, fiber.StatusOK, "success to get system info", sys)
 	})
 }

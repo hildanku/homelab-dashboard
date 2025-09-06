@@ -43,9 +43,9 @@ func main() {
 		}
 		stats, err := services.CheckProcesses(targets)
 		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+			return shared.AppResponse(c, fiber.StatusInternalServerError, "failed to get services", nil)
 		}
-		return c.JSON(stats)
+		return shared.AppResponse(c, fiber.StatusOK, "success to get metrics", stats)
 	})
 
 	app.Get("/api/ping/all", func(c *fiber.Ctx) error {
@@ -53,13 +53,14 @@ func main() {
 		for _, u := range cfg.HTTPTargets {
 			out = append(out, services.PingHTTP(u))
 		}
-		return c.JSON(out)
+		return shared.AppResponse(c, fiber.StatusOK, "success", out)
 	})
 
 	app.Get("/api/docker", func(c *fiber.Ctx) error {
 		cmd := "docker ps"
 		out, err := exec.Command("sh", "-c", cmd).CombinedOutput()
-		return c.JSON(fiber.Map{
+
+		return shared.AppResponse(c, fiber.StatusOK, "success to get docker", fiber.Map{
 			"ok":     err == nil,
 			"output": string(out), // kamu bisa split per baris lalu parse jadi array
 		})

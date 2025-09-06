@@ -6,3 +6,9 @@ type HTTPStatus struct {
 	Code    int    `json:"code"`
 	Latency int64  `json:"latency_ms"`
 }
+
+type ProcStatus struct {
+	Name  string `json:"name"`
+	Found bool   `json:"found"`
+	Count int    `json:"count"`
+}

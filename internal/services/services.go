@@ -23,12 +23,6 @@ func PingHTTP(url string) domain.HTTPStatus {
 	return domain.HTTPStatus{URL: url, OK: resp.StatusCode < 400, Code: resp.StatusCode, Latency: lat}
 }
 
-type ProcStatus struct {
-	Name  string `json:"name"`
-	Found bool   `json:"found"`
-	Count int    `json:"count"`
-}
-
 func listComms() (map[string]int, error) {
 	counts := map[string]int{}
 	entries, err := os.ReadDir("/proc")
@@ -55,15 +49,15 @@ func listComms() (map[string]int, error) {
 	return counts, nil
 }
 
-func CheckProcesses(targets []string) ([]ProcStatus, error) {
+func CheckProcesses(targets []string) ([]domain.ProcStatus, error) {
 	comms, err := listComms()
 	if err != nil {
 		return nil, err
 	}
-	out := make([]ProcStatus, 0, len(targets))
+	out := make([]domain.ProcStatus, 0, len(targets))
 	for _, t := range targets {
 		c := comms[t]
-		out = append(out, ProcStatus{Name: t, Found: c > 0, Count: c})
+		out = append(out, domain.ProcStatus{Name: t, Found: c > 0, Count: c})
 	}
 	return out, nil
 }

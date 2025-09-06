@@ -8,19 +8,9 @@ import (
 	"strings"
 	"syscall"
 	"time"
-)
 
-type Snapshot struct {
-	CPUUsage  float64 `json:"cpu_usage"`
-	RAMTotal  uint64  `json:"ram_total"`
-	RAMFree   uint64  `json:"ram_free"`
-	RAMUsed   uint64  `json:"ram_used"`
-	RAMUsage  float64 `json:"ram_usage"`
-	DiskTotal uint64  `json:"disk_total"`
-	DiskFree  uint64  `json:"disk_free"`
-	DiskUsed  uint64  `json:"disk_used"`
-	DiskUsage float64 `json:"disk_usage"`
-}
+	"github.com/hildanku/homelab-dashboard/domain"
+)
 
 func cpuTotals() (idleAll, total uint64, err error) {
 	f, err := os.Open("/proc/stat")
@@ -132,20 +122,20 @@ func DiskUsage(path string) (total, used, free uint64, usedPct float64, err erro
 	return
 }
 
-func SnapshotNow() (Snapshot, error) {
+func SnapshotNow() (domain.Snapshot, error) {
 	cpu, err := CPUUsagePercent()
 	if err != nil {
-		return Snapshot{}, err
+		return domain.Snapshot{}, err
 	}
 	rt, ru, rf, rp, err := Memory()
 	if err != nil {
-		return Snapshot{}, err
+		return domain.Snapshot{}, err
 	}
 	dt, du, df, dp, err := DiskUsage("/")
 	if err != nil {
-		return Snapshot{}, err
+		return domain.Snapshot{}, err
 	}
-	return Snapshot{
+	return domain.Snapshot{
 		CPUUsage:  cpu,
 		RAMTotal:  rt,
 		RAMUsed:   ru,

@@ -7,25 +7,20 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/hildanku/homelab-dashboard/domain"
 )
 
-type HTTPStatus struct {
-	URL     string `json:"url"`
-	OK      bool   `json:"ok"`
-	Code    int    `json:"code"`
-	Latency int64  `json:"latency_ms"`
-}
-
-func PingHTTP(url string) HTTPStatus {
+func PingHTTP(url string) domain.HTTPStatus {
 	client := &http.Client{Timeout: 3 * time.Second}
 	start := time.Now()
 	resp, err := client.Get(url)
 	lat := time.Since(start).Milliseconds()
 	if err != nil {
-		return HTTPStatus{URL: url, OK: false, Code: 0, Latency: lat}
+		return domain.HTTPStatus{URL: url, OK: false, Code: 0, Latency: lat}
 	}
 	defer resp.Body.Close()
-	return HTTPStatus{URL: url, OK: resp.StatusCode < 400, Code: resp.StatusCode, Latency: lat}
+	return domain.HTTPStatus{URL: url, OK: resp.StatusCode < 400, Code: resp.StatusCode, Latency: lat}
 }
 
 type ProcStatus struct {

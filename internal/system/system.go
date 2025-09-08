@@ -18,7 +18,6 @@ func GetInfo() domain.Info {
 		GoVersion: runtime.Version(),
 	}
 
-	// Baca /etc/os-release
 	if f, err := os.Open("/etc/os-release"); err == nil {
 		defer f.Close()
 		sc := bufio.NewScanner(f)
@@ -33,7 +32,6 @@ func GetInfo() domain.Info {
 		}
 	}
 
-	// Baca kernel versi via /proc/sys/kernel/osrelease
 	if b, err := os.ReadFile("/proc/sys/kernel/osrelease"); err == nil {
 		info.Kernel = strings.TrimSpace(string(b))
 	}

@@ -10,7 +10,28 @@ import (
 	"time"
 
 	"github.com/hildanku/homelab-dashboard/domain"
+	"github.com/shirou/gopsutil/v4/cpu"
+	"github.com/shirou/gopsutil/v4/mem"
 )
+
+func GetUsage() (*domain.Usage, error) {
+	cpuPercent, err := cpu.Percent(100*time.Millisecond, false)
+	if err != nil {
+		return nil, err
+	}
+
+	vmStat, err := mem.VirtualMemory()
+	if err != nil {
+		return nil, err
+	}
+
+	return &domain.Usage{
+		CPUUsage:      cpuPercent[0],
+		RAMUsed:       vmStat.Used / 1024 / 1024,
+		RAMTotal:      vmStat.Total / 1024 / 1024,
+		MemoryPercent: vmStat.UsedPercent,
+	}, nil
+}
 
 func cpuTotals() (idleAll, total uint64, err error) {
 	f, err := os.Open("/proc/stat")

@@ -54,4 +54,12 @@ func RegisterRoutes(app *fiber.App, cfg domain.Config) {
 		sys := system.GetInfo()
 		return shared.AppResponse(c, fiber.StatusOK, "success to get system info", sys)
 	})
+
+	app.Get("/api/metrics-v2", func(c *fiber.Ctx) error {
+		usage, err := metrics.GetUsage()
+		if err != nil {
+			return shared.AppResponse(c, fiber.StatusInternalServerError, "failed to get usage", nil)
+		}
+		return shared.AppResponse(c, fiber.StatusOK, "success to get usage", usage)
+	})
 }

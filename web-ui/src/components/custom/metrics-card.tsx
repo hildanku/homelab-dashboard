@@ -22,7 +22,7 @@ export function MetricsCard() {
         isLoading,
         isError,
         error,
-    } = useApi<MetricsData>("http://localhost:5551/api/metrics", 3000)
+    } = useApi<MetricsData>("http://localhost:5551/api/metrics-v2", 3000)
 
     if (isLoading) {
         return (

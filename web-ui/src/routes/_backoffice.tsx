@@ -1,13 +1,19 @@
 import { AppSidebar } from '@/components/app-sidebar'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+
+import { getSession } from '@/lib/auth'
 
 export const Route = createFileRoute('/_backoffice')({
-    beforeLoad: async () => {
-        // middleware like:
-        // if (!isAuthenticated) {
-        //      redirect to balbalblalbla
-        // }
+    beforeLoad: async ({ location }) => {
+        const session = await getSession()
+        if (!session.authenticated) {
+            throw redirect({
+                to: '/login',
+                search: { redirect: location.pathname + location.search },
+                replace: true,
+            })
+        }
     },
     component: BackOfficeLayout,
 })

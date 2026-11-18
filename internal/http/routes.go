@@ -5,13 +5,25 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/hildanku/homelab-dashboard/domain"
+	"github.com/hildanku/homelab-dashboard/internal/auth"
 	"github.com/hildanku/homelab-dashboard/internal/metrics"
 	"github.com/hildanku/homelab-dashboard/internal/services"
 	"github.com/hildanku/homelab-dashboard/internal/shared"
 	"github.com/hildanku/homelab-dashboard/internal/system"
 )
 
-func RegisterRoutes(app *fiber.App, cfg domain.Config) {
+func RegisterRoutes(app *fiber.App, cfg domain.Config, authSvc *auth.Service) {
+	app.Get("/api/health", func(c *fiber.Ctx) error {
+		return shared.AppResponse(c, fiber.StatusOK, "ok", fiber.Map{"status": "ok"})
+	})
+
+	app.Post("/api/login", authSvc.Login)
+
+	app.Use("/api", authSvc.Middleware())
+
+	app.Get("/api/auth/me", authSvc.Me)
+	app.Post("/api/logout", authSvc.Logout)
+
 	app.Get("/api/metrics", func(c *fiber.Ctx) error {
 		snap, err := metrics.SnapshotNow()
 		if err != nil {

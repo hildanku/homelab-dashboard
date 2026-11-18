@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as BackofficeRouteImport } from './routes/_backoffice'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BackofficeManagementIndexRouteImport } from './routes/_backoffice/management/index'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BackofficeRoute = BackofficeRouteImport.update({
   id: '/_backoffice',
   getParentRoute: () => rootRouteImport,
@@ -31,33 +37,44 @@ const BackofficeManagementIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/management': typeof BackofficeManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/management': typeof BackofficeManagementIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_backoffice': typeof BackofficeRouteWithChildren
+  '/login': typeof LoginRoute
   '/_backoffice/management/': typeof BackofficeManagementIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/management'
+  fullPaths: '/' | '/login' | '/management'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/management'
-  id: '__root__' | '/' | '/_backoffice' | '/_backoffice/management/'
+  to: '/' | '/login' | '/management'
+  id: '__root__' | '/' | '/_backoffice' | '/login' | '/_backoffice/management/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BackofficeRoute: typeof BackofficeRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_backoffice': {
       id: '/_backoffice'
       path: ''
@@ -97,6 +114,7 @@ const BackofficeRouteWithChildren = BackofficeRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BackofficeRoute: BackofficeRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

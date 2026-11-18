@@ -23,12 +23,8 @@ function RootComponent() {
 
     return (
         <>
-            {/* <HeaderV2 /> */}
-            <div className="mt-16">
-                <Outlet />
-            </div>
+            <Outlet />
             <Separator />
-            {/*<Footer /> */}
             <TanStackRouterDevtools />
         </>
     )

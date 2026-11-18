@@ -11,7 +11,7 @@ interface PingData {
 }
 
 export function PingStatus() {
-    const { data, isLoading, isError, error } = useApi<PingData[]>("http://localhost:5551/api/ping/all")
+    const { data, isLoading, isError, error } = useApi<PingData[]>("/api/ping/all")
 
     if (isLoading) {
         return (

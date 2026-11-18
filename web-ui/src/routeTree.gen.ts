@@ -9,23 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as BackofficeRouteImport } from './routes/_backoffice'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BackofficeManagementIndexRouteImport } from './routes/_backoffice/management/index'
-import { Route as BackofficeManagementUsersIndexRouteImport } from './routes/_backoffice/management/users/index'
 
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BackofficeRoute = BackofficeRouteImport.update({
   id: '/_backoffice',
   getParentRoute: () => rootRouteImport,
@@ -41,74 +28,36 @@ const BackofficeManagementIndexRoute =
     path: '/management/',
     getParentRoute: () => BackofficeRoute,
   } as any)
-const BackofficeManagementUsersIndexRoute =
-  BackofficeManagementUsersIndexRouteImport.update({
-    id: '/management/users/',
-    path: '/management/users/',
-    getParentRoute: () => BackofficeRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
   '/management': typeof BackofficeManagementIndexRoute
-  '/management/users': typeof BackofficeManagementUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
   '/management': typeof BackofficeManagementIndexRoute
-  '/management/users': typeof BackofficeManagementUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_backoffice': typeof BackofficeRouteWithChildren
-  '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
   '/_backoffice/management/': typeof BackofficeManagementIndexRoute
-  '/_backoffice/management/users/': typeof BackofficeManagementUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/blog' | '/management' | '/management/users'
+  fullPaths: '/' | '/management'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/blog' | '/management' | '/management/users'
-  id:
-    | '__root__'
-    | '/'
-    | '/_backoffice'
-    | '/about'
-    | '/blog'
-    | '/_backoffice/management/'
-    | '/_backoffice/management/users/'
+  to: '/' | '/management'
+  id: '__root__' | '/' | '/_backoffice' | '/_backoffice/management/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BackofficeRoute: typeof BackofficeRouteWithChildren
-  AboutRoute: typeof AboutRoute
-  BlogRoute: typeof BlogRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_backoffice': {
       id: '/_backoffice'
       path: ''
@@ -130,24 +79,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BackofficeManagementIndexRouteImport
       parentRoute: typeof BackofficeRoute
     }
-    '/_backoffice/management/users/': {
-      id: '/_backoffice/management/users/'
-      path: '/management/users'
-      fullPath: '/management/users'
-      preLoaderRoute: typeof BackofficeManagementUsersIndexRouteImport
-      parentRoute: typeof BackofficeRoute
-    }
   }
 }
 
 interface BackofficeRouteChildren {
   BackofficeManagementIndexRoute: typeof BackofficeManagementIndexRoute
-  BackofficeManagementUsersIndexRoute: typeof BackofficeManagementUsersIndexRoute
 }
 
 const BackofficeRouteChildren: BackofficeRouteChildren = {
   BackofficeManagementIndexRoute: BackofficeManagementIndexRoute,
-  BackofficeManagementUsersIndexRoute: BackofficeManagementUsersIndexRoute,
 }
 
 const BackofficeRouteWithChildren = BackofficeRoute._addFileChildren(
@@ -157,8 +97,6 @@ const BackofficeRouteWithChildren = BackofficeRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BackofficeRoute: BackofficeRouteWithChildren,
-  AboutRoute: AboutRoute,
-  BlogRoute: BlogRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

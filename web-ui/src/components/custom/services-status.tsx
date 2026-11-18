@@ -11,7 +11,7 @@ interface ServiceData {
 }
 
 export function ServicesStatus() {
-    const { data, isLoading, isError, error } = useApi<ServiceData[]>("http://localhost:5551/api/services")
+    const { data, isLoading, isError, error } = useApi<ServiceData[]>("/api/services")
 
     if (isLoading) {
         return (

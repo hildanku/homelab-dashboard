@@ -13,7 +13,7 @@ interface SystemData {
 }
 
 export function SystemInfo() {
-    const { data, isLoading, isError, error } = useApi<SystemData>("http://localhost:5551/api/system")
+    const { data, isLoading, isError, error } = useApi<SystemData>("/api/system")
 
     if (isLoading) {
         return (
